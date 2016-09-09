@@ -1,0 +1,24 @@
+<div class="col-md-4" ng-controller="learnerRequestController">
+  <h1>Welcome Learner</h1>
+  <form class="form" >
+    <div class="form-group">
+      <label>Question</label>
+        <input type="name" class="form-control" placeholder="e.g. Why isn't my car starting?" ng-model="request.question" required>
+      <label>Topic</label>  
+        <input type="name" class="form-control" placeholder="e.g. Cars" ng-model="request.topic" required>
+      <label>Difficulty</label>
+        <input type="name" class="form-control" placeholder="e.g. Medium" ng-model="request.difficulty" required>
+      <label>Preferred Contact Method</label>
+        <input type="name" class="form-control" placeholder="e.g. Chat" ng-model="request.contact_method" required>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-default" ng-click="createRequest()" ng-disabled="disabled">Submit</button>
+    </div>
+  </form>
+
+  <br><br><br>
+  <div ng-controller="learnerLogoutController">
+    <a ng-click='logout()' class="btn btn-danger">Logout</a>
+  </div>  
+</div>
+

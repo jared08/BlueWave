@@ -1,0 +1,42 @@
+<nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#/teacher">Blue Wave</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#/teacher">Home</a></li>
+              <li><a href="#/teacher_profile">Profile</a></li>             
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-controller="teacherLogoutController">
+              <li><a ng-click='logout()' href="#/login">Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+<div ng-controller="teacherRequestController">  
+  <h3>Active Requests</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Topic</th>
+          <th>Difficulty</th>
+          <th>Name</th>
+          <th>Contact Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="request in requestlist">
+          <td>{{request.question}}</td>
+          <td>{{request.topic}}</td>
+          <td>{{request.difficulty}}</td>
+          <td>{{request.learner.name}}</td>
+          <td>{{request.contact_method}}</td>
+          <td><button class="btn btn-success" ng-click="acceptRequest(request._id)">Accept Request</button><td>
+        </tr>
+      </tbody>
+    </table>
+
+</div>

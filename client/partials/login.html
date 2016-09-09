@@ -1,0 +1,20 @@
+<div class="col-md-4">
+  <h1>Login</h1>
+  <div ng-show="error" class="alert alert-danger">{{errorMessage}}</div>
+  <form class="form" >
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" class="form-control" name="username" ng-model="loginForm.username" required>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+        <input type="password" class="form-control" name="password" ng-model="loginForm.password" required>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-default" ng-controller="teacherLoginController" ng-click="login()" ng-disabled="disabled">Log in to teach</button>
+        <button type="submit" class="btn btn-default" ng-controller="learnerLoginController" ng-click="login()" ng-disabled="disabled">Log in to learn</button>
+      </div>
+  </form>
+  <br>
+  <a href="http:/#/register">Click here to register.</a>
+</div>

@@ -1,0 +1,30 @@
+<h1>Welcome Teacher</h1>
+
+<div ng-controller="teacherTopicController">
+    <label>My Topics</label>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>         
+          <th>Years of experience</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr>
+            <td><input class="form-control" ng-model="topic.name"></td>
+            <td><input class="form-control" ng-model="topic.experience"></td>
+            <td><button class="btn btn-primary" ng-click="addTopic()">Add Topic</button></td> 
+          </tr>
+          <tr ng-repeat="topic in topiclist">
+            <td>{{topic.name}}</td>
+            <td>{{topic.experience}}</td>
+            <td><button class="btn btn-danger" ng-click="removeTopic(topic.name)">Remove</button></td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+
+<br><br><br>
+<div ng-controller="teacherLogoutController">
+  <a ng-click='logout()' class="btn btn-danger">Logout</a>
+</div>	
