@@ -83,10 +83,22 @@ angular.module('myApp').controller('teacherRegisterController',
 
 }]);
 
-angular.module('myApp').controller('teacherRequestController',
-  ['$rootScope', '$scope', '$location', 'RequestService',
-  function ($rootScope, $scope, $location, RequestService) {
+angular.module('myApp').directive('myModal', function() {
+   return {
+     restrict: 'A',
+     link: function(scope, element, attr) {
+       scope.dismiss = function() {
+           element.modal('hide');
+       };
+     }
+   } 
+});
 
+angular.module('myApp').controller('teacherRequestController',
+  ['$rootScope', '$scope', '$location', '$timeout', 'RequestService',
+  function ($rootScope, $scope, $location, $timeout, RequestService) {
+
+    var stop = false;
 
     var refreshRequests = function() {
 
@@ -107,14 +119,19 @@ angular.module('myApp').controller('teacherRequestController',
 
     refreshRequests();
 
+    $scope.refresh = function () {
+      refreshRequests();
+    };
+
+
     $scope.acceptRequest = function (request_id) {
-      console.log('ACCEPTING REQUEST');
       RequestService.acceptRequest($rootScope.teacher_id, request_id)
        // handle success
         .then(function () {
-          console.log('SETTING PATH TO TEACH');
+          stop = false;
           $rootScope.request_id = request_id;
-          $location.path('/teach');
+          refreshSingleRequest();
+          // $location.path('/teach');
           $scope.disabled = false;
         })
         // handle error
@@ -124,7 +141,56 @@ angular.module('myApp').controller('teacherRequestController',
           $scope.errorMessage = "Something went wrong!";
           $scope.disabled = false;
         });
-        console.log('END OF REQUEST SERVICE');
+    };
+
+    var refreshSingleRequest = function() {
+       $timeout(function() {
+
+        RequestService.getRequestInfo($rootScope.request_id)
+         // handle success
+          .then(function (data) {
+            console.log('DATA FROM SINGLE REQUEST: ' + data[0].state);
+            console.log('STOP: ' + stop);
+              if (!stop) {
+                if(data[0].state == 'in_progress') {
+                  console.log('they accepted!!');
+
+                  $('.modal').modal('hide');
+
+                  // var loginModal = $modal({template:'/template.html', show:false});
+                  // loginModal.$promise.then(loginModal.hide);
+
+                  // this.$hide();
+
+                  $location.path('/teach');
+                } else {
+                  console.log('still waiting..');
+                  refreshSingleRequest();
+                }
+              }
+          })
+          // handle error
+          .catch(function () {
+            $scope.error = true;
+            $scope.errorMessage = "Something went wrong!";
+            $scope.disabled = false;
+          });
+        }, 3000)
+      };    
+
+      $scope.cancelRequest = function () {
+      RequestService.cancelRequest($rootScope.request_id)
+       // handle success
+        .then(function () {
+          $rootScope.request_id = '';
+          stop = true;
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+        });
     };
 
 }]);
@@ -133,6 +199,7 @@ angular.module('myApp').controller('teacherTopicController',
   ['$rootScope', '$scope', '$location', 'TeacherTopicService',
   function ($rootScope, $scope, $location, TeacherTopicService) {
 
+    console.log('INSIDE TEACHER TOPIC SERVICE!!!!');
 
     var refreshTopics = function() {
       console.log('refreshing requests!!');
@@ -142,7 +209,7 @@ angular.module('myApp').controller('teacherTopicController',
         .then(function (data) {
           $scope.topiclist = data[0].topics;
           console.log('topiclist: ' + $scope.topiclist);
-          $location.path('/teacher');
+          $location.path('/teacher_profile');
           $scope.disabled = false;
         })
         // handle error
@@ -167,7 +234,7 @@ angular.module('myApp').controller('teacherTopicController',
       TeacherTopicService.addTopic($rootScope.teacher_id, $scope.topic.name, $scope.topic.experience)
         // handle success
         .then(function () {
-          $location.path('/teacher');
+          $location.path('/teacher_profile');
           $scope.disabled = false;
           refreshTopics();
           $scope.topic = '';
@@ -191,7 +258,7 @@ angular.module('myApp').controller('teacherTopicController',
       TeacherTopicService.removeTopic($rootScope.teacher_id, topic_name)
         // handle success
         .then(function () {
-          $location.path('/teacher');
+          $location.path('/teacher_profile');
           $scope.disabled = false;
           refreshTopics();
         })

@@ -52,3 +52,16 @@ myApp.config(function ($routeProvider) {
       redirectTo: '/'
     });    
 });
+
+// myApp.run(function ($rootScope, $location, $route, TeacherAuthService) {
+//   $rootScope.$on('$routeChangeStart',
+//     function (event, next, current) {
+//       TeacherAuthService.getTeacherStatus()
+//       .then(function(){
+//         if (next.access.restricted && !TeacherAuthService.isLoggedIn()){
+//           $location.path('/teacher');
+//           $route.reload();
+//         }
+//       });
+//   });
+// });

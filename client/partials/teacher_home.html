@@ -34,9 +34,31 @@
           <td>{{request.difficulty}}</td>
           <td>{{request.learner.name}}</td>
           <td>{{request.contact_method}}</td>
-          <td><button class="btn btn-success" ng-click="acceptRequest(request._id)">Accept Request</button><td>
+          <td><button class="btn btn-success" ng-click="acceptRequest(request._id)" data-toggle="modal" data-target="#myModal">Accept Request</button><td>
         </tr>
       </tbody>
     </table>
 
+    <button class="btn btn-primary" ng-click="refresh()">Refresh</button><td>
+
+
+    <!-- Modal -->
+  <div class="modal" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" ng-click="cancelRequest()">&times;</button>
+          <h4 class="modal-title">Waiting for your learner to accept..</h4>
+        </div>
+        <div class="modal-body">
+          <p>Please wait..</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelRequest()">Leave</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
+

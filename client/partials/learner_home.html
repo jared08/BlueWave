@@ -3,22 +3,72 @@
   <form class="form" >
     <div class="form-group">
       <label>Question</label>
-        <input type="name" class="form-control" placeholder="e.g. Why isn't my car starting?" ng-model="request.question" required>
+        <input type="name" class="form-control" placeholder="e.g. Why isn't my car starting?" ng-model="request.question" required>        
       <label>Topic</label>  
         <input type="name" class="form-control" placeholder="e.g. Cars" ng-model="request.topic" required>
-      <label>Difficulty</label>
-        <input type="name" class="form-control" placeholder="e.g. Medium" ng-model="request.difficulty" required>
-      <label>Preferred Contact Method</label>
-        <input type="name" class="form-control" placeholder="e.g. Chat" ng-model="request.contact_method" required>
+      
+      <br>      
+      <div>
+        <label>Difficulty</label>
+        <div class=radio>
+          <label><input type="radio" ng-model="request.difficulty" value="Easy">Easy</label>
+        </div>
+        <div class=radio>
+          <label><input type="radio" ng-checked="request.isChecked1" ng-model="request.difficulty" value="Medium">Medium</label>
+        </div>
+        <div class=radio>
+          <label><input type="radio" ng-model="request.difficulty" value="Hard">Hard</label>
+        </div>
+        <div class=radio>
+          <label><input type="radio" ng-model="request.difficulty" value="Not Sure">Not Sure</label>
+        </div>
+      </div>
+ 
+      <div>
+        <label>Preferred Contact Method</label>
+        <div class=radio>
+          <label><input type="radio" ng-checked="request.isChecked2" ng-model="request.contact_method" value="Chat">Chat</label>
+        </div>
+        <div class=radio>
+          <label><input type="radio" ng-model="request.contact_method" value="Phone Call">Phone Call</label>
+        </div>
+        <div class=radio>
+          <label><input type="radio" ng-model="request.contact_method" value="Email">Email</label>
+        </div>
+      </div>
     </div>
     <div>
-      <button type="submit" class="btn btn-default" ng-click="createRequest()" ng-disabled="disabled">Submit</button>
+      <button type="submit" class="btn btn-default" ng-click="createRequest()" data-toggle="modal" data-target="#myModal">Submit</button>
     </div>
-  </form>
+  </form> 
 
-  <br><br><br>
-  <div ng-controller="learnerLogoutController">
-    <a ng-click='logout()' class="btn btn-danger">Logout</a>
-  </div>  
+
+  <!-- Modal -->
+  <div class="modal" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" ng-click="deleteRequest()">&times;</button>
+          <h4 class="modal-title">{{request.header}}</h4>
+        </div>
+        <div class="modal-body">
+          <p>{{request.teacher.info}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deleteRequest()" >Cancel Request</button>
+          <button type="button" class="btn btn-default" ng-click="rejectTeacher()" ng-disabled="disable_button">Different Teacher</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="acceptTeacher()" ng-disabled="disable_button">
+          Accept</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<br><br><br>
+<div ng-controller="learnerLogoutController">
+  <a ng-click='logout()' class="btn btn-danger">Logout</a>
+</div> 
+
+
 

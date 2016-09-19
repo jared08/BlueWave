@@ -1,7 +1,22 @@
-<h1>Welcome Teacher</h1>
+<nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#/teacher">Blue Wave</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#/teacher">Home</a></li>
+              <li><a href="#/teacher_profile">Profile</a></li>             
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-controller="teacherLogoutController">
+              <li><a ng-click='logout()' href="#/login">Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
 
 <div ng-controller="teacherTopicController">
-    <label>My Topics</label>
+    <h3>My Topics</h3>
     <table class="table">
       <thead>
         <tr>
@@ -13,7 +28,7 @@
           <tr>
             <td><input class="form-control" ng-model="topic.name"></td>
             <td><input class="form-control" ng-model="topic.experience"></td>
-            <td><button class="btn btn-primary" ng-click="addTopic()">Add Topic</button></td> 
+            <td><button class="btn btn-success" ng-click="addTopic()">Add Topic</button></td> 
           </tr>
           <tr ng-repeat="topic in topiclist">
             <td>{{topic.name}}</td>

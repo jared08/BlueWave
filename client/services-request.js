@@ -22,6 +22,76 @@ angular.module('myApp').factory('RequestService',
 
     }
 
+    function getRequestInfo(request_id) {
+
+      var parameters = {
+         request_id: request_id
+      };
+
+      return $http.get('/request/getRequestInfo',
+        { params: parameters })
+            .then(function(response) {
+              return response.data;
+            });
+    }
+
+    function getTeacherInfo(teacher_id) {
+
+      var parameters = {
+         teacher_id: teacher_id
+      };
+
+      return $http.get('/request/getTeacherInfo',
+        { params: parameters })
+            .then(function(response) {
+              return response.data;
+            });
+    }
+
+    function getTeacherTopicInfo(teacher_id, topic) {
+
+      var parameters = {
+         teacher_id: teacher_id,
+         topic: topic
+      };
+
+      return $http.get('/request/getTeacherTopicInfo',
+        { params: parameters })
+            .then(function(response) {
+              return response.data;
+            });
+    }
+
+    function deleteRequest(request_id) {
+      // create a new instance of deferred
+      var deferred = $q.defer();
+
+      var parameters = {
+         request_id: request_id
+      };
+
+      // send a post request to the server
+      $http.delete('/request/deleteRequest',
+        { params: parameters })
+        // handle success
+        .success(function (data, status) {
+          if(status === 200 && data.status){
+            deferred.resolve();
+          } else {
+            deferred.reject();
+          }
+        })
+        // handle error
+        .error(function (data) {
+          deferred.reject();
+        });
+
+      // return promise object
+      
+      return deferred.promise;
+
+    }
+
     function acceptRequest(teacher_id, request_id) {
       // create a new instance of deferred
       var deferred = $q.defer();
@@ -42,7 +112,47 @@ angular.module('myApp').factory('RequestService',
 
     }
 
-    function cancelRequest(teacher_id, request_id) {
+    function acceptTeacher(request_id, learner_id, question) {
+      // create a new instance of deferred
+      var deferred = $q.defer();
+
+      // send a post request to the server
+      return $http.put('/request/acceptTeacher',
+        {request_id: request_id, learner_id: learner_id, question: question})
+        .then(function(response) {
+              console.log(response.data);
+              return response.data;
+            });
+
+      // return promise object
+      
+      return deferred.promise;
+
+    }
+
+
+
+
+    function rejectTeacher(request_id) {
+      // create a new instance of deferred
+      var deferred = $q.defer();
+
+      // send a post request to the server
+      return $http.put('/request/rejectTeacher',
+        {request_id: request_id})
+        .then(function(response) {
+              console.log(response.data);
+              return response.data;
+            });
+
+      // return promise object
+      
+      return deferred.promise;
+
+    }
+
+
+    function cancelRequest(request_id) {
       // create a new instance of deferred
       var deferred = $q.defer();
 
@@ -62,11 +172,9 @@ angular.module('myApp').factory('RequestService',
 
     }
 
-    function finishRequest(teacher_id, request_id) {
+    function finishRequest(request_id) {
       // create a new instance of deferred
       var deferred = $q.defer();
-
-      console.log('trying to put: ' + teacher_id + ' and: ' + request_id);
 
       // send a post request to the server
       return $http.put('/request/finishRequest',
@@ -83,6 +191,7 @@ angular.module('myApp').factory('RequestService',
     }
 
     function getRequestListForTopic(teacher_id) {
+      console.log('getting request list for: ' + teacher_id);
 
       var parameters = {
          teacher_id: teacher_id
@@ -91,6 +200,7 @@ angular.module('myApp').factory('RequestService',
       return $http.get('/request/getRequestListForTopic',
         { params: parameters })
             .then(function(response) {
+              console.log('TOPIC RESPONSE: ' + response.data);
               return response.data;
             });
     }
@@ -98,10 +208,17 @@ angular.module('myApp').factory('RequestService',
     // return available functions for use in the controllers
     return ({
       createRequest: createRequest,
+      getRequestInfo: getRequestInfo,
+      getTeacherInfo: getTeacherInfo,
+      getTeacherTopicInfo: getTeacherTopicInfo,
+      deleteRequest: deleteRequest,
+      acceptRequest: acceptRequest,
+      acceptTeacher: acceptTeacher,
+      rejectTeacher: rejectTeacher,
       cancelRequest: cancelRequest,
       finishRequest: finishRequest,
       getRequestListForTopic: getRequestListForTopic,
-      acceptRequest: acceptRequest
+      
     }); 
 
     

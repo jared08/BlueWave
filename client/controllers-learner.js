@@ -78,9 +78,20 @@ angular.module('myApp').controller('learnerRegisterController',
 }]);
 
 angular.module('myApp').controller('learnerRequestController',
-  ['$rootScope', '$scope', '$location', 'RequestService',
-  function ($rootScope, $scope, $location, RequestService) {
+  ['$rootScope', '$scope', '$timeout', '$location', 'RequestService',
+  function ($rootScope, $scope, $timeout, $location, RequestService) {
     console.log('inside learner request controller');
+
+    $scope.request = {};
+    $scope.request.difficulty = 'Medium';
+    $scope.request.contact_method = 'Chat';
+    $scope.request.isChecked1 = true;
+    $scope.request.isChecked2 = true;
+    $scope.disable_button = true;
+
+    var stop;
+
+    
 
     $scope.createRequest = function () {
 
@@ -88,17 +99,24 @@ angular.module('myApp').controller('learnerRequestController',
       $scope.error = false;
       $scope.disabled = true;
 
-      console.log('$scope.request.topic: ' + $scope.request.topic);
+      $scope.disable_button = true;
+
+      //needs this to stop loop of looking for a teacher if someone hits cancel
+      stop = false;
 
       // call register from service
       RequestService.createRequest($rootScope.learner_id, $scope.request.question, $scope.request.topic, $scope.request.difficulty,
         $scope.request.contact_method)
         // handle success
         .then(function (data) {
+
           console.log('data: ' + data);
           $rootScope.request_id = data._id;
-          $location.path('/learn');
+          $scope.request = data;
+          $scope.request.header = 'Trying to find you a teacher..';
+          $location.path('/learner');
           $scope.disabled = false;
+          refreshRequest();
         })
         // handle error
         .catch(function () {
@@ -107,6 +125,130 @@ angular.module('myApp').controller('learnerRequestController',
           $scope.disabled = false;
         });
 
+    };
+
+     var refreshRequest = function() {
+      $timeout(function() {
+
+        RequestService.getRequestInfo($rootScope.request_id)
+         // handle success
+          .then(function (data) {
+            console.log('STOP: ' + stop);
+            if (!stop) {
+              if(data[0].teacher_id) {
+                console.log('found a teacher!!!');
+                $rootScope.teacher_id = data[0].teacher_id;
+                getTeacher();
+              } else {
+                console.log('still looking for a teacher..');
+                refreshRequest();
+              }
+            }
+          })
+          // handle error
+          .catch(function () {
+            $scope.error = true;
+            $scope.errorMessage = "Something went wrong!";
+            $scope.disabled = false;
+          });
+        }, 3000)
+      };  
+
+    var getTeacher = function() {
+
+        RequestService.getTeacherInfo($rootScope.teacher_id)
+         // handle success
+          .then(function (data) {
+            $scope.request.teacher = data[0];
+            $scope.request.header = 'We found you a teacher!';
+            getTeacherTopicInfo(data[0]);
+          })
+          // handle error
+          .catch(function () {
+            $scope.error = true;
+            $scope.errorMessage = "Something went wrong!";
+            $scope.disabled = false;
+          });
+      }; 
+
+    var getTeacherTopicInfo = function() {
+
+        RequestService.getTeacherTopicInfo($rootScope.teacher_id, $scope.request.topic)
+         // handle success
+          .then(function (data) {
+            console.log('data: ' + data);
+            $scope.request.topic_info = data;
+            $scope.request.teacher.info = $scope.request.teacher.name + ' -- ' + $scope.request.topic_info.experience + 
+              ' years of experience with ' + $scope.request.topic;
+            $scope.disable_button = false;
+          })
+          // handle error
+          .catch(function () {
+            $scope.error = true;
+            $scope.errorMessage = "Something went wrong!";
+            $scope.disabled = false;
+          });
+      };     
+
+    $scope.rejectTeacher = function () {
+      RequestService.rejectTeacher($rootScope.request_id)
+       // handle success
+        .then(function () {
+          $rootScope.teacher_id = '';
+          $scope.request.topic_info = '';
+          $scope.request.header = 'Trying to find you another teacher...';
+          $scope.request.teacher = '';
+          $scope.disable_button = true;
+          refreshRequest();
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+        });
+    }; 
+
+    $scope.acceptTeacher = function() {
+      RequestService.acceptTeacher($rootScope.request_id, $rootScope.learner_id, $scope.request.question)
+       // handle success
+        .then(function () {
+          stop = true;      
+          $location.path('/learn');
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+        });
+      
+    }
+
+    $scope.deleteRequest = function () {
+      RequestService.deleteRequest($rootScope.request_id)
+       // handle success
+        .then(function () {
+          $rootScope.request_id = '';
+          $rootScope.teacher_id = '';
+          $scope.request = {};
+
+          $scope.request.difficulty = 'Medium';
+          $scope.request.contact_method = 'Chat';
+          $scope.request.isChecked1 = true;
+          $scope.request.isChecked2 = true;
+
+          console.log('SETTING STOP TO TRUE');
+          stop = true;
+          
+          $location.path('/learner');
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+        });
     };
 
 }]);
@@ -160,11 +302,12 @@ angular.module('myApp').controller('learnController',
         });
     };
 
-    $scope.cancelRequest = function (request_id) {
-      RequestService.cancelRequest($rootScope.learner_id, $rootScope.request_id)
+    $scope.deleteRequest = function () {
+      RequestService.deleteRequest($rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
+          $rootScope.teacher_id = '';
           $location.path('/learner');
           $scope.disabled = false;
         })
@@ -177,7 +320,7 @@ angular.module('myApp').controller('learnController',
     };
 
     $scope.finishRequest = function (request_id) {
-      RequestService.finishRequest($rootScope.learner_id, $rootScope.request_id)
+      RequestService.finishRequest($rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';

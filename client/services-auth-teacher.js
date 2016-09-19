@@ -39,17 +39,21 @@ angular.module('myApp').factory('TeacherAuthService',
     }
 
     function getTeacherStatus() {
+      console.log('GETTING TEACHER STATUS');
       return $http.get('/teacher/status')
       // handle success
       .success(function (data) {
         if(data.status){
+          console.log('TEACHER IS TRUE');
           teacher = true;
         } else {
+          console.log('TEACHER IS FALSE BC: ' + data);
           teacher = false;
         }
       })
       // handle error
       .error(function (data) {
+        console.log('TEACHER IS FALSE BC ERROR: ' + data);
         teacher = false;
       });
     }
