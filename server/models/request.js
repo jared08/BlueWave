@@ -7,7 +7,8 @@ var Teacher = require('./teacher.js').schema;
 var Message = require('./message.js').schema;
 
 var Request = new Schema({
-  learner: Learner,
+  // _id: { type: String, unique: true },
+  learner_id: {type: String, unique: false},
   teacher_id: String,
   state: String,
   question: String,

@@ -10,7 +10,7 @@ var Learner = new Schema({
   password: String,
   name: String,
   phone_number: String,
-  requests: [Request] 
+  requests: [String] //request_ids
 });
 
 Learner.plugin(passportLocalMongoose);

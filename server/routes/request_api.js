@@ -7,22 +7,23 @@ var Teacher = require('../models/teacher.js');
 var Message = require('../models/message.js'); 
 var _ = require('lodash'); 
 
-router.post('/createRequest', function (req, res) {  
-  Learner.findOne({_id: req.body.learner_id}, function(learner_err, learner_data) {
-    if (learner_err) {
-        return res.status(500).json({
-        learner_err: learner_err
-      });
-    } else {
-        Request.create(new Request({ learner: learner_data, state: 'pending', question: req.body.question, 
-          topic: req.body.topic, difficulty: req.body.difficulty, contact_method: req.body.contact_method }), function(err, doc) {
-          if (err) {
-                  return res.json(err);
-                } else {
-                  return res.json(doc);
-                }
-        }); 
-    }
+router.post('/createRequest', function (req, res) { 
+  Request.create(new Request({ learner: req.body.learner_id, state: 'pending', question: req.body.question, 
+    topic: req.body.topic, difficulty: req.body.difficulty, contact_method: req.body.contact_method}), function(request_err, request_doc) {
+      if (request_err) {
+        return res.json(request_err);
+      } else {
+        console.log('trying to add to learner: ' + request_doc._id);
+        Learner.update({_id: req.body.learner_id }, {$push: { 'requests' : request_doc._id }}, function(learner_err, learner_data) { 
+          if (learner_err) {
+            console.log('err: ' + learner_err);
+            return res.json(learner_err);
+          } else {
+            return res.json(request_doc);
+          }          
+        })
+        
+      }
   })
 });
 
@@ -56,7 +57,6 @@ router.get('/getTeacherTopicInfo', function(req, res) {
         console.log('teacher_err: ' + teacher_err);
         return res.json(teacher_err);
       } else {
-        //maybe should only search topics array for topic in case someone has a name with a topic in it or something
         console.log('teacher_data.topics: ' + teacher_data.topics);
         for (i = 0; i < teacher_data.topics.length; i++) {
           if (teacher_data.topics[i].name === req.query.topic) {
@@ -66,20 +66,6 @@ router.get('/getTeacherTopicInfo', function(req, res) {
         return res.json(teacher_err);
       }
     });
-});
-
-router.delete('/deleteRequest', function (req, res) {
-  Request.remove({_id: req.query.request_id}, function(err, doc) {
-    if (err) {
-      console.log('err: ' + err);
-      return res.status(500).json({
-        err: err
-      });
-    }
-    return res.status(200).json({
-      status: 'Deleted Topic!'  
-    });
-  })
 });
 
 router.put('/acceptRequest', function (req, res) {      
@@ -128,7 +114,7 @@ router.put('/rejectTeacher', function (req, res) {
 });
 
 router.put('/cancelRequest', function (req, res) {
-      Request.findByIdAndUpdate(req.body.request_id, {state: 'pending', teacher_id: null}, function (err, doc) {
+      Request.findByIdAndUpdate(req.body.request_id, {state: 'cancelled', teacher_id: null}, function (err, doc) {
         if (err) {
               return res.json(err);
             } else {
@@ -171,6 +157,32 @@ router.get('/getRequestListForTopic', function(req, res) {
               return res.json(data);
             }
           });
+    }
+  })
+});
+
+router.get('/getRequests', function(req, res) {
+  Learner.findOne({_id: req.query.user_id}, function(learner_err, learner_data) {
+    if (learner_err) {
+        return res.status(500).json({
+        learner_err: learner_err
+      });
+    } else {
+      if (learner_data) {
+        console.log('FOUND LEARNER_DATA: ' + learner_data.requests);
+        Request.find({_id: learner_data.requests}, function(request_err, request_data) {
+          console.log('REQUEST DATA FROM QUERY: ' + request_data);
+          if (request_err) {
+              return res.status(500).json({
+              request_err: request_err
+            });
+          } else {
+            return res.json(request_data);
+          }
+        });
+      } else {
+        //TBD for teacher
+      }
     }
   })
 });

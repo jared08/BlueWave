@@ -5,6 +5,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 
 var Message = new Schema({
+  // _id: { type: String, unique: true },
   sender_id: String,
   sender_name: String,
   time: String,

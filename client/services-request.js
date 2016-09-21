@@ -62,36 +62,6 @@ angular.module('myApp').factory('RequestService',
             });
     }
 
-    function deleteRequest(request_id) {
-      // create a new instance of deferred
-      var deferred = $q.defer();
-
-      var parameters = {
-         request_id: request_id
-      };
-
-      // send a post request to the server
-      $http.delete('/request/deleteRequest',
-        { params: parameters })
-        // handle success
-        .success(function (data, status) {
-          if(status === 200 && data.status){
-            deferred.resolve();
-          } else {
-            deferred.reject();
-          }
-        })
-        // handle error
-        .error(function (data) {
-          deferred.reject();
-        });
-
-      // return promise object
-      
-      return deferred.promise;
-
-    }
-
     function acceptRequest(teacher_id, request_id) {
       // create a new instance of deferred
       var deferred = $q.defer();
@@ -156,11 +126,9 @@ angular.module('myApp').factory('RequestService',
       // create a new instance of deferred
       var deferred = $q.defer();
 
-      console.log('trying to put: ' + teacher_id + ' and: ' + request_id);
-
       // send a post request to the server
       return $http.put('/request/cancelRequest',
-        {teacher_id: teacher_id, request_id: request_id})
+        {request_id: request_id})
         .then(function(response) {
               console.log(response.data);
               return response.data;
@@ -178,7 +146,7 @@ angular.module('myApp').factory('RequestService',
 
       // send a post request to the server
       return $http.put('/request/finishRequest',
-        {teacher_id: teacher_id, request_id: request_id})
+        {request_id: request_id})
         .then(function(response) {
               console.log(response.data);
               return response.data;
@@ -205,19 +173,32 @@ angular.module('myApp').factory('RequestService',
             });
     }
 
+    function getRequests(user_id) {
+      var parameters = {
+        user_id: user_id
+      };
+
+      return $http.get('/request/getRequests',
+        { params: parameters })
+            .then(function(response) {
+              console.log('response.data: ' + response.data);
+              return response.data;
+            });
+    }
+
     // return available functions for use in the controllers
     return ({
       createRequest: createRequest,
       getRequestInfo: getRequestInfo,
       getTeacherInfo: getTeacherInfo,
       getTeacherTopicInfo: getTeacherTopicInfo,
-      deleteRequest: deleteRequest,
       acceptRequest: acceptRequest,
       acceptTeacher: acceptTeacher,
       rejectTeacher: rejectTeacher,
       cancelRequest: cancelRequest,
       finishRequest: finishRequest,
       getRequestListForTopic: getRequestListForTopic,
+      getRequests: getRequests
       
     }); 
 

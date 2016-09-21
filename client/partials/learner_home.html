@@ -1,3 +1,20 @@
+<nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#/learner">Blue Wave</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#/learner">Home</a></li>
+              <li><a href="#/learner_profile">Profile</a></li>             
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-controller="learnerLogoutController">
+              <li><a ng-click='logout()' href="#/login">Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
 <div class="col-md-4" ng-controller="learnerRequestController">
   <h1>Welcome Learner</h1>
   <form class="form" >
@@ -55,7 +72,7 @@
           <p>{{request.teacher.info}}</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="deleteRequest()" >Cancel Request</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelRequest()" >Cancel Request</button>
           <button type="button" class="btn btn-default" ng-click="rejectTeacher()" ng-disabled="disable_button">Different Teacher</button>
           <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="acceptTeacher()" ng-disabled="disable_button">
           Accept</button>
@@ -64,11 +81,5 @@
     </div>
   </div>
 </div>
-
-<br><br><br>
-<div ng-controller="learnerLogoutController">
-  <a ng-click='logout()' class="btn btn-danger">Logout</a>
-</div> 
-
 
 

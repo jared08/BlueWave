@@ -38,6 +38,11 @@ myApp.config(function ($routeProvider) {
       controller: 'learnerRequestController',
       access: {restricted: true}
     })
+    .when('/learner_profile', {
+      templateUrl: 'partials/learner_profile.html',
+      controller: 'learnerProfileController',
+      access: {restricted: true}
+    }) 
     .when('/teach', {
       templateUrl: 'partials/teach.html',
       controller: 'teachController',

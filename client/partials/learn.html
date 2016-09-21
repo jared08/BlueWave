@@ -1,3 +1,19 @@
+<nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#/learn" data-toggle="modal" data-target="#cancelModal1">Blue Wave</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#/learn" data-toggle="modal" data-target="#cancelModal1">Home</a></li>
+              <li><a href="#/learn" data-toggle="modal" data-target="#cancelModal2">Profile</a></li>             
+            </ul>
+            <ul class="nav navbar-nav navbar-right" ng-controller="learnerLogoutController">
+              <li><a href="#/learn" data-toggle="modal" data-target="#cancelModal3">Log Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
 <div class="container" ng-controller="learnController">    
   <div class="col-md-5">
     <div class="panel panel-primary">
@@ -28,9 +44,89 @@
         </div>
       </div>
     </div> 
-    <button class="btn btn-primary" ng-click="refresh()">Refresh Messages</button>
-    <button class="btn btn-primary" ng-click="deleteRequest()">Cancel</button>
-    <button class="btn btn-primary" ng-click="finishRequest()">Finish</button>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#cancelModal1">Cancel</button>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#finishModal">Finish</button>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal" id="finishedModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">The teacher finished the lesson!</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Review Lesson</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="keepLearning()">Keep Learning</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+     <!-- Modal -->
+  <div class="modal" id="cancelledModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">The teacher cancelled the lesson..</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Review Lesson</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="keepLearning()">Keep Learning</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+     <!-- Modal -->
+  <div class="modal" id="cancelModal1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Are you sure you want to cancel this lesson?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelRequest(1)">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="cancelModal2" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Are you sure you want to cancel this lesson?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelRequest(2)">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="cancelModal3" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Are you sure you want to cancel this lesson?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelRequest(3)">Yes</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

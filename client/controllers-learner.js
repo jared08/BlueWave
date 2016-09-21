@@ -12,8 +12,7 @@ angular.module('myApp').controller('learnerLoginController',
       LearnerAuthService.loginToLearn($scope.loginForm.username, $scope.loginForm.password)
         // handle success
         .then(function (data) {          
-          $rootScope.learner_id = data._id;          
-          console.log('learner_id: ' + data._id);
+          $rootScope.learner_id = data._id;       
           $location.path('/learner');
           $scope.disabled = false;
           $scope.loginForm = {};
@@ -80,7 +79,6 @@ angular.module('myApp').controller('learnerRegisterController',
 angular.module('myApp').controller('learnerRequestController',
   ['$rootScope', '$scope', '$timeout', '$location', 'RequestService',
   function ($rootScope, $scope, $timeout, $location, RequestService) {
-    console.log('inside learner request controller');
 
     $scope.request = {};
     $scope.request.difficulty = 'Medium';
@@ -110,7 +108,6 @@ angular.module('myApp').controller('learnerRequestController',
         // handle success
         .then(function (data) {
 
-          console.log('data: ' + data);
           $rootScope.request_id = data._id;
           $scope.request = data;
           $scope.request.header = 'Trying to find you a teacher..';
@@ -133,7 +130,6 @@ angular.module('myApp').controller('learnerRequestController',
         RequestService.getRequestInfo($rootScope.request_id)
          // handle success
           .then(function (data) {
-            console.log('STOP: ' + stop);
             if (!stop) {
               if(data[0].teacher_id) {
                 console.log('found a teacher!!!');
@@ -176,7 +172,6 @@ angular.module('myApp').controller('learnerRequestController',
         RequestService.getTeacherTopicInfo($rootScope.teacher_id, $scope.request.topic)
          // handle success
           .then(function (data) {
-            console.log('data: ' + data);
             $scope.request.topic_info = data;
             $scope.request.teacher.info = $scope.request.teacher.name + ' -- ' + $scope.request.topic_info.experience + 
               ' years of experience with ' + $scope.request.topic;
@@ -225,8 +220,8 @@ angular.module('myApp').controller('learnerRequestController',
       
     }
 
-    $scope.deleteRequest = function () {
-      RequestService.deleteRequest($rootScope.request_id)
+    $scope.cancelRequest = function () {
+      RequestService.cancelRequest($rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
@@ -238,7 +233,6 @@ angular.module('myApp').controller('learnerRequestController',
           $scope.request.isChecked1 = true;
           $scope.request.isChecked2 = true;
 
-          console.log('SETTING STOP TO TRUE');
           stop = true;
           
           $location.path('/learner');
@@ -257,19 +251,30 @@ angular.module('myApp').controller('learnController',
   ['$rootScope', '$scope', '$location', 'LearnService', 'RequestService',
   function ($rootScope, $scope, $location, LearnService, RequestService) {
 
+    var from_send = false;
+
     var getMessages = function() {
       LearnService.getMessages($rootScope.request_id)
        // handle success
         .then(function (data) {
-          var messages = data[0].messages;          
-          for (i = 0; i < messages.length; i++) {
-            if(messages[i].sender_id == $rootScope.learner_id) {
-              messages[i].sender_name = 'Me';
+          if (data[0].state == 'cancelled') {
+              $('#cancelModal').modal('show');
+            } else if (data[0].state == 'finished') {
+              $('#finishModal').modal('show');
+            } else {
+            var messages = data[0].messages;          
+            for (i = 0; i < messages.length; i++) {
+              if(messages[i].sender_id == $rootScope.learner_id) {
+                messages[i].sender_name = 'Me';
+              } 
+            }
+            $scope.messagelist = messages;
+            $scope.enabled = true;
+            if (!from_send) {
+              refresh();
             } 
           }
-          $scope.messagelist = messages;
-          $location.path('/learn');
-          $scope.enabled = true;
+          
         })
         // handle error
         .catch(function () {
@@ -281,8 +286,11 @@ angular.module('myApp').controller('learnController',
 
     getMessages();
 
-    $scope.refresh = function() {
-      getMessages();
+    var refresh = function() {
+      $timeout(function() {
+        from_send = false;
+        getMessages();
+      }, 3000)
     }
 
     $scope.send = function () {
@@ -292,6 +300,7 @@ angular.module('myApp').controller('learnController',
           $scope.content = '';
           $location.path('/learn');
           $scope.enabled = true;
+          from_send = true;
           getMessages();
         })
         // handle error
@@ -302,13 +311,25 @@ angular.module('myApp').controller('learnController',
         });
     };
 
-    $scope.deleteRequest = function () {
-      RequestService.deleteRequest($rootScope.request_id)
+    $scope.keepLearning = function() {
+      $location.path('/learner');
+      $('.modal').modal('hide');
+    }
+
+    $scope.cancelRequest = function (path) {
+      RequestService.cancelRequest($rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
           $rootScope.teacher_id = '';
-          $location.path('/learner');
+          if (path == 1) {
+            $location.path('/learner');
+          } else if (path == 2) {
+            $location.path('/learner_profile');
+          } else if (path == 3) {
+            $location.path('login');
+          }
+          
           $scope.disabled = false;
         })
         // handle error
@@ -334,5 +355,31 @@ angular.module('myApp').controller('learnController',
           $scope.disabled = false;
         });        
     };
+
+}]);
+
+
+
+angular.module('myApp').controller('learnerProfileController',
+  ['$rootScope', '$scope', '$location', 'RequestService',
+  function ($rootScope, $scope, $location, RequestService) {
+
+  var getRequests = function() {
+      RequestService.getRequests($rootScope.learner_id)
+       // handle success
+        .then(function (data) {
+          $scope.requestlist = data;
+          $scope.enabled = true;
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+        });
+    };
+
+
+  getRequests();
 
 }]);

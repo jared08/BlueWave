@@ -199,8 +199,6 @@ angular.module('myApp').controller('teacherTopicController',
   ['$rootScope', '$scope', '$location', 'TeacherTopicService',
   function ($rootScope, $scope, $location, TeacherTopicService) {
 
-    console.log('INSIDE TEACHER TOPIC SERVICE!!!!');
-
     var refreshTopics = function() {
       console.log('refreshing requests!!');
 
@@ -273,35 +271,54 @@ angular.module('myApp').controller('teacherTopicController',
 }]);
 
 angular.module('myApp').controller('teachController',
-  ['$rootScope', '$scope', '$location', 'TeachService', 'RequestService',
-  function ($rootScope, $scope, $location, TeachService, RequestService) {
+  ['$rootScope', '$scope', '$location', '$timeout', 'TeachService', 'RequestService',
+  function ($rootScope, $scope, $location, $timeout, TeachService, RequestService) {
+
+    var from_send = false;
 
     var getMessages = function() {
-      TeachService.getMessages($rootScope.request_id)
-       // handle success
-        .then(function (data) {
-          var messages = data[0].messages;          
-          for (i = 0; i < messages.length; i++) {
-            if(messages[i].sender_id == $rootScope.teacher_id) {
-              messages[i].sender_name = 'Me';
-            } 
-          }
-          $scope.messagelist = messages;
-          $location.path('/teach');
-          $scope.enabled = true;
-        })
-        // handle error
-        .catch(function () {
-          $scope.error = true;
-          $scope.errorMessage = "Something went wrong!";
-          $scope.disabled = false;
-        });
+      console.log('calling get messages!!');
+      
+        console.log('inside timeout function');
+        TeachService.getMessages($rootScope.request_id)
+         // handle success
+          .then(function (data) {
+            console.log('inside callback');
+            if (data[0].state == 'cancelled') {
+              $('#cancelledModal').modal('show');
+            } else if (data[0].state == 'finished') {
+              $('#finishedModal').modal('show');
+            } else {
+              var messages = data[0].messages;          
+              for (i = 0; i < messages.length; i++) {
+                if(messages[i].sender_id == $rootScope.teacher_id) {
+                  messages[i].sender_name = 'Me';
+                } 
+              }
+              $scope.messagelist = messages;              
+              $scope.enabled = true;    
+              if (!from_send) {
+                refresh();
+              }               
+            }
+            
+          })
+          // handle error
+          .catch(function () {
+            $scope.error = true;
+            $scope.errorMessage = "Something went wrong!";
+            $scope.disabled = false;
+          });
+
     };
 
     getMessages();
 
-    $scope.refresh = function() {
-      getMessages();
+    var refresh = function() {
+      $timeout(function() {
+        from_send = false;
+        getMessages();
+      }, 3000)
     }
 
     $scope.send = function () {
@@ -311,6 +328,7 @@ angular.module('myApp').controller('teachController',
           $scope.content = '';
           $location.path('/teach');
           $scope.enabled = true;
+          from_send = true;
           getMessages();
         })
         // handle error
@@ -338,14 +356,24 @@ angular.module('myApp').controller('teachController',
         });
       };
 
-    $scope.cancelRequest = function (request_id) {
+     $scope.keepTeaching = function() {
+      $location.path('/teacher');
+      $('.modal').modal('hide');
+    }
+
+    $scope.cancelRequest = function (path) {
       RequestService.cancelRequest($rootScope.teacher_id, $rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
-          $location.path('/teacher');
-          $scope.disabled = false;
-          refreshRequests();
+          if (path == 1) {
+            $location.path('/teacher');
+            refreshRequests();
+          } else if (path == 2) {
+            $location.path('/teacher_profile');
+          } else if (path == 3) {
+            $location.path('login');
+          }          
         })
         // handle error
         .catch(function () {
