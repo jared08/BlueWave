@@ -174,6 +174,8 @@ angular.module('myApp').factory('RequestService',
     }
 
     function getRequests(user_id) {
+
+      //user_id b/c both teacher and learner can call this function
       var parameters = {
         user_id: user_id
       };

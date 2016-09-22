@@ -37,4 +37,26 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div ng-controller="teacherProfileController">
+    <h3>My Classes</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Topic</th>
+          <th>Difficulty</th>
+          <th>Learner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="request in requestlist">
+          <td>{{request.question}}</td>
+          <td>{{request.topic}}</td>
+          <td>{{request.difficulty}}</td>
+          <td>{{request.learner.name}}</td>
+        </tr>
+      </tbody>
+    </table>
 </div>

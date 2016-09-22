@@ -81,6 +81,22 @@
     </div>
   </div>
 
+    <!-- Modal -->
+  <div class="modal" id="finishModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Are you sure you want to finish this lesson?</h4>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="finishRequest()">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
      <!-- Modal -->
   <div class="modal" id="cancelModal1" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg">

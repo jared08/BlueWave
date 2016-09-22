@@ -275,6 +275,7 @@ angular.module('myApp').controller('teachController',
   function ($rootScope, $scope, $location, $timeout, TeachService, RequestService) {
 
     var from_send = false;
+    var stop = false;
 
     var getMessages = function() {
       console.log('calling get messages!!');
@@ -284,22 +285,24 @@ angular.module('myApp').controller('teachController',
          // handle success
           .then(function (data) {
             console.log('inside callback');
-            if (data[0].state == 'cancelled') {
-              $('#cancelledModal').modal('show');
-            } else if (data[0].state == 'finished') {
-              $('#finishedModal').modal('show');
-            } else {
-              var messages = data[0].messages;          
-              for (i = 0; i < messages.length; i++) {
-                if(messages[i].sender_id == $rootScope.teacher_id) {
-                  messages[i].sender_name = 'Me';
-                } 
+            if (!stop) {
+              if (data[0].state == 'cancelled') {
+                $('#cancelledModal').modal('show');
+              } else if (data[0].state == 'finished') {
+                $('#finishedModal').modal('show');
+              } else {
+                var messages = data[0].messages;          
+                for (i = 0; i < messages.length; i++) {
+                  if(messages[i].sender_id == $rootScope.teacher_id) {
+                    messages[i].sender_name = 'Me';
+                  } 
+                }
+                $scope.messagelist = messages;              
+                $scope.enabled = true;    
+                if (!from_send) {
+                  refresh();
+                }               
               }
-              $scope.messagelist = messages;              
-              $scope.enabled = true;    
-              if (!from_send) {
-                refresh();
-              }               
             }
             
           })
@@ -366,6 +369,7 @@ angular.module('myApp').controller('teachController',
        // handle success
         .then(function () {
           $rootScope.request_id = '';
+          stop = true;
           if (path == 1) {
             $location.path('/teacher');
             refreshRequests();
@@ -387,6 +391,7 @@ angular.module('myApp').controller('teachController',
       RequestService.finishRequest($rootScope.teacher_id, $rootScope.request_id)
        // handle success
         .then(function () {
+          stop = true;
           $rootScope.request_id = '';
           $location.path('/teacher');
           $scope.disabled = false;
@@ -399,5 +404,29 @@ angular.module('myApp').controller('teachController',
           $scope.disabled = false;
         });        
     };
+
+}]);
+
+angular.module('myApp').controller('teacherProfileController',
+  ['$rootScope', '$scope', '$location', 'RequestService',
+  function ($rootScope, $scope, $location, RequestService) {
+
+  var getRequests = function() {
+      RequestService.getRequests($rootScope.teacher_id)
+       // handle success
+        .then(function (data) {
+          $scope.requestlist = data;
+          $scope.enabled = true;
+        })
+        // handle error
+        .catch(function () {
+          $scope.error = true;
+          $scope.errorMessage = "Something went wrong!";
+          $scope.disabled = false;
+        });
+    };
+
+
+  getRequests();
 
 }]);

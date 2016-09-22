@@ -5,7 +5,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 
 var Message = new Schema({
-  // _id: { type: String, unique: true },
+  _id: { type: String, unique: true },
   sender_id: String,
   sender_name: String,
   time: String,
@@ -13,6 +13,6 @@ var Message = new Schema({
 });
 
 Message.plugin(passportLocalMongoose);
-
+Message.set('autoIndex', false);
 
 module.exports = mongoose.model('messages', Message);

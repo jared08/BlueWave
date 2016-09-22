@@ -6,10 +6,14 @@ var Request = require('../models/request.js');
 var Teacher = require('../models/teacher.js'); 
 var Message = require('../models/message.js'); 
 var _ = require('lodash'); 
+var ObjectId = require('mongoose').Types.ObjectId;
 
 router.post('/createRequest', function (req, res) { 
-  Request.create(new Request({ learner: req.body.learner_id, state: 'pending', question: req.body.question, 
-    topic: req.body.topic, difficulty: req.body.difficulty, contact_method: req.body.contact_method}), function(request_err, request_doc) {
+  var date = new Date();
+
+  Request.create({ _id: new ObjectId(), learner_id: req.body.learner_id, state: 'pending', question: req.body.question, 
+    topic: req.body.topic, difficulty: req.body.difficulty, contact_method: req.body.contact_method, create_time: date}, 
+    function(request_err, request_doc) {
       if (request_err) {
         return res.json(request_err);
       } else {
@@ -89,7 +93,8 @@ router.put('/acceptTeacher', function (req, res) {
         });
       } else {
         console.log('LEARNER DATA: ' + learner_data);
-        Request.findByIdAndUpdate(req.body.request_id, {state: 'in_progress', 
+        var date = new Date();
+        Request.findByIdAndUpdate(req.body.request_id, {state: 'in_progress', start_time: date,
           $push: { 'messages' : (new Message({ sender_id: learner_id, sender_name: learner_data.name, content: req.body.question })) }},
             function (err, doc) {
               if (err) {
@@ -114,7 +119,8 @@ router.put('/rejectTeacher', function (req, res) {
 });
 
 router.put('/cancelRequest', function (req, res) {
-      Request.findByIdAndUpdate(req.body.request_id, {state: 'cancelled', teacher_id: null}, function (err, doc) {
+  var date = new Date();
+      Request.findByIdAndUpdate(req.body.request_id, {state: 'cancelled', end_time: date}, function (err, doc) {
         if (err) {
               return res.json(err);
             } else {
@@ -124,7 +130,8 @@ router.put('/cancelRequest', function (req, res) {
 });
 
 router.put('/finishRequest', function (req, res) {
-      Request.findByIdAndUpdate(req.body.request_id, {state: 'finished'}, function (err, doc) {
+  var date = new Date();
+      Request.findByIdAndUpdate(req.body.request_id, {state: 'finished', end_time: date}, function (err, doc) {
         if (err) {
               return res.json(err);
             } else {
@@ -162,26 +169,24 @@ router.get('/getRequestListForTopic', function(req, res) {
 });
 
 router.get('/getRequests', function(req, res) {
-  Learner.findOne({_id: req.query.user_id}, function(learner_err, learner_data) {
+  Request.find({learner_id: req.query.user_id}, function (learner_err, learner_data) {
     if (learner_err) {
-        return res.status(500).json({
+      return res.status(500).json({
         learner_err: learner_err
       });
     } else {
-      if (learner_data) {
-        console.log('FOUND LEARNER_DATA: ' + learner_data.requests);
-        Request.find({_id: learner_data.requests}, function(request_err, request_data) {
-          console.log('REQUEST DATA FROM QUERY: ' + request_data);
-          if (request_err) {
-              return res.status(500).json({
-              request_err: request_err
+      if (learner_data[0] != null) {
+        return res.json(learner_data);
+      } else {
+        Request.find({teacher_id: req.query.user_id}, function (teacher_err, teacher_data) {
+          if (teacher_err) {
+            return res.status(500).json({
+              teacher_err: teacher_err
             });
           } else {
-            return res.json(request_data);
-          }
-        });
-      } else {
-        //TBD for teacher
+              return res.json(teacher_data);
+          } 
+        })     
       }
     }
   })
