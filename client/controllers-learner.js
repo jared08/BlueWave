@@ -252,7 +252,7 @@ angular.module('myApp').controller('learnController',
   function ($rootScope, $scope, $location, $timeout, LearnService, RequestService) {
 
     var from_send = false;
-    var stop = false;
+    var stop = false;    
 
     var getMessages = function() {
         LearnService.getMessages($rootScope.request_id)
@@ -326,7 +326,6 @@ angular.module('myApp').controller('learnController',
         .then(function () {
           $rootScope.request_id = '';
           $rootScope.teacher_id = '';
-          console.log('setting stop to true');
           stop = true;
           if (path == 1) {
             $location.path('/learner');
@@ -347,11 +346,10 @@ angular.module('myApp').controller('learnController',
     };
 
     $scope.finishRequest = function () {
-      RequestService.finishRequest($rootScope.request_id)
+      RequestService.finishRequest($rootScope.request_id, $scope.request.teacher_rating, $scope.request.understanding)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
-          console.log('setting stop to true');
           stop = true;
           $location.path('/learner');
           $scope.disabled = false;
@@ -377,6 +375,28 @@ angular.module('myApp').controller('learnerProfileController',
        // handle success
         .then(function (data) {
           $scope.requestlist = data;
+          for (var i = 0; i < data.length; i++) {
+            var date1 = new Date(data[i].start_time);
+            var date2 = new Date(data[i].end_time);
+
+            var diff = ((date2 - date1) / 1000).toString();
+
+            var time;
+            if (diff < 60) {
+              time = Math.round((diff / 1)) + ' seconds';
+            } else if (diff < 3600) {
+              time = Math.round((diff / 60)) + ' minutes';
+            } else if (diff < 86400) {
+              time = Math.round((diff / 3600)) + ' hours';
+            } else if (diff < 604800) {
+              time = Math.round((diff / 86400)) + ' days'
+            } else if (diff < 31449600) {
+              time = Math.round((diff / 604800)) + ' weeks';
+            } else {
+              time = Math.round((diff / 31449600)) + ' years';
+            }
+            $scope.requestlist[i].time = time;
+          }
           $scope.enabled = true;
         })
         // handle error

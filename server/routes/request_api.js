@@ -131,7 +131,8 @@ router.put('/cancelRequest', function (req, res) {
 
 router.put('/finishRequest', function (req, res) {
   var date = new Date();
-      Request.findByIdAndUpdate(req.body.request_id, {state: 'finished', end_time: date}, function (err, doc) {
+      Request.findByIdAndUpdate(req.body.request_id, {state: 'finished', end_time: date, understanding: req.body.understanding,
+        teacher_rating: req.body.teacher_rating}, function (err, doc) {
         if (err) {
               return res.json(err);
             } else {

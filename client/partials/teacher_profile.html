@@ -47,7 +47,9 @@
           <th>Question</th>
           <th>Topic</th>
           <th>Difficulty</th>
-          <th>Learner</th>
+          <th>Time</th>
+          <th>Learner's Rating</th>
+          <th>Learner's Understanding</th>
         </tr>
       </thead>
       <tbody>
@@ -55,7 +57,9 @@
           <td>{{request.question}}</td>
           <td>{{request.topic}}</td>
           <td>{{request.difficulty}}</td>
-          <td>{{request.learner.name}}</td>
+          <td>{{request.time}}</td>
+          <td>{{request.teacher_rating}}</td>
+          <td>{{request.understanding}}</td>
         </tr>
       </tbody>
     </table>

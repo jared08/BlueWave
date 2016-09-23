@@ -18,7 +18,9 @@ var Request = new Schema({
   messages: [Message],
   create_time: Date,
   start_time: Date,
-  end_time: Date
+  end_time: Date,
+  teacher_rating: Number,
+  understanding: Number
 });
 
 Request.plugin(passportLocalMongoose);

@@ -388,7 +388,7 @@ angular.module('myApp').controller('teachController',
     };
 
     $scope.finishRequest = function (request_id) {
-      RequestService.finishRequest($rootScope.teacher_id, $rootScope.request_id)
+      RequestService.finishRequest($rootScope.request_id)
        // handle success
         .then(function () {
           stop = true;
@@ -416,6 +416,28 @@ angular.module('myApp').controller('teacherProfileController',
        // handle success
         .then(function (data) {
           $scope.requestlist = data;
+          for (var i = 0; i < data.length; i++) {
+            var date1 = new Date(data[i].start_time);
+            var date2 = new Date(data[i].end_time);
+
+            var diff = ((date2 - date1) / 1000).toString();
+
+            var time;
+            if (diff < 60) {
+              time = Math.round((diff / 1)) + ' seconds';
+            } else if (diff < 3600) {
+              time = Math.round((diff / 60)) + ' minutes';
+            } else if (diff < 86400) {
+              time = Math.round((diff / 3600)) + ' hours';
+            } else if (diff < 604800) {
+              time = Math.round((diff / 86400)) + ' days'
+            } else if (diff < 31449600) {
+              time = Math.round((diff / 604800)) + ' weeks';
+            } else {
+              time = Math.round((diff / 31449600)) + ' years';
+            }
+            $scope.requestlist[i].time = time;
+          }
           $scope.enabled = true;
         })
         // handle error
