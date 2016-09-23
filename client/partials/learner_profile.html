@@ -26,6 +26,7 @@
           <th>Time</th>
           <th>Teacher Rating</th>
           <th>Understanding</th>
+          <th>View Messages</th>
         </tr>
       </thead>
       <tbody>
@@ -36,7 +37,35 @@
           <td>{{request.time}}</td>
           <td>{{request.teacher_rating}}</td>
           <td>{{request.understanding}}</td>
+          <td><button class="btn btn-primary" data-toggle="modal" data-target="#messagesModal" ng-click="setMessages(request)">View Messages</button></td>
         </tr>
       </tbody>
     </table>
+
+          <!-- Modal -->
+      <div class="modal" id="messagesModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Messages with teacher</h4>
+            </div>
+            <div class="modal-body">
+              <ul class="chat" ng-repeat="message in messagelist">
+                  <div class="chat-body clearfix">
+                    <div class="header">
+                      <strong class="primary-font">{{message.sender_name}}</strong>
+                    </div>
+                    <p>
+                      {{message.content}}
+                    </p>
+                  </div>                        
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>

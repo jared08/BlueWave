@@ -416,7 +416,9 @@ angular.module('myApp').controller('teacherProfileController',
        // handle success
         .then(function (data) {
           $scope.requestlist = data;
+          // $scope.messagelist = data.messages;
           for (var i = 0; i < data.length; i++) {
+
             var date1 = new Date(data[i].start_time);
             var date2 = new Date(data[i].end_time);
 
@@ -450,5 +452,18 @@ angular.module('myApp').controller('teacherProfileController',
 
 
   getRequests();
+
+  $scope.setMessages = function (request) {
+    var index = $scope.requestlist.indexOf(request);
+    console.log('index: ' + index);
+
+    var messages = $scope.requestlist[index].messages;       
+    for (i = 0; i < messages.length; i++) {
+      if(messages[i].sender_id == $rootScope.teacher_id) {
+        messages[i].sender_name = 'Me';
+      } 
+    }
+    $scope.messagelist = messages;
+  }
 
 }]);

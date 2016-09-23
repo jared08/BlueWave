@@ -410,4 +410,17 @@ angular.module('myApp').controller('learnerProfileController',
 
   getRequests();
 
+   $scope.setMessages = function (request) {
+    var index = $scope.requestlist.indexOf(request);
+    console.log('index: ' + index);
+
+    var messages = $scope.requestlist[index].messages;       
+    for (i = 0; i < messages.length; i++) {
+      if(messages[i].sender_id == $rootScope.learner_id) {
+        messages[i].sender_name = 'Me';
+      } 
+    }
+    $scope.messagelist = messages;
+  }
+
 }]);

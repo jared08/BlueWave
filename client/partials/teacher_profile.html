@@ -40,27 +40,56 @@
     </div>
 
     <div ng-controller="teacherProfileController">
-    <h3>My Classes</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Question</th>
-          <th>Topic</th>
-          <th>Difficulty</th>
-          <th>Time</th>
-          <th>Learner's Rating</th>
-          <th>Learner's Understanding</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="request in requestlist">
-          <td>{{request.question}}</td>
-          <td>{{request.topic}}</td>
-          <td>{{request.difficulty}}</td>
-          <td>{{request.time}}</td>
-          <td>{{request.teacher_rating}}</td>
-          <td>{{request.understanding}}</td>
-        </tr>
-      </tbody>
-    </table>
-</div>
+      <h3>My Classes</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Topic</th>
+            <th>Difficulty</th>
+            <th>Time</th>
+            <th>Learner's Rating</th>
+            <th>Learner's Understanding</th>
+            <th>View Messages</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="request in requestlist">
+            <td>{{request.question}}</td>
+            <td>{{request.topic}}</td>
+            <td>{{request.difficulty}}</td>
+            <td>{{request.time}}</td>
+            <td>{{request.teacher_rating}}</td>
+            <td>{{request.understanding}}</td>
+            <td><button class="btn btn-primary" data-toggle="modal" data-target="#messagesModal" ng-click="setMessages(request)">View Messages</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+            <!-- Modal -->
+      <div class="modal" id="messagesModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Messages with learner</h4>
+            </div>
+            <div class="modal-body">
+              <ul class="chat" ng-repeat="message in messagelist">
+                  <div class="chat-body clearfix">
+                    <div class="header">
+                      <strong class="primary-font">{{message.sender_name}}</strong>
+                    </div>
+                    <p>
+                      {{message.content}}
+                    </p>
+                  </div>                        
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
