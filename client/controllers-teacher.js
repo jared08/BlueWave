@@ -432,7 +432,7 @@ angular.module('myApp').controller('teacherProfileController',
             } else if (diff < 86400) {
               time = Math.round((diff / 3600)) + ' hours';
             } else if (diff < 604800) {
-              time = Math.round((diff / 86400)) + ' days'
+              time = Math.round((diff / 86400)) + ' days';
             } else if (diff < 31449600) {
               time = Math.round((diff / 604800)) + ' weeks';
             } else {

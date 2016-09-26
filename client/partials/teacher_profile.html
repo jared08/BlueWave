@@ -21,18 +21,24 @@
       <thead>
         <tr>
           <th>Name</th>         
-          <th>Years of experience</th>
+          <th>Years of experience</th>          
+          <th>Number of Classes</th>
+          <th>Rating</th>
         </tr>
       </thead>
       <tbody>
           <tr>
             <td><input class="form-control" ng-model="topic.name"></td>
             <td><input class="form-control" ng-model="topic.experience"></td>
+            <td></td>
+            <td></td>
             <td><button class="btn btn-success" ng-click="addTopic()">Add Topic</button></td> 
           </tr>
           <tr ng-repeat="topic in topiclist">
             <td>{{topic.name}}</td>
             <td>{{topic.experience}}</td>
+            <td>{{topic.num_classes}}</td>
+            <td>{{topic.rating}}</td>
             <td><button class="btn btn-danger" ng-click="removeTopic(topic.name)">Remove</button></td>
           </tr>
         </tbody>

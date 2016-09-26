@@ -136,9 +136,48 @@ router.put('/finishRequest', function (req, res) {
         if (err) {
               return res.json(err);
             } else {
-              return res.json(doc);
-            }
-          });
+                Teacher.findOne({'_id': req.body.teacher_id}, function(teacher_err, teacher_data) {
+                  if (teacher_err) {
+                    return res.status(500).json({
+                      teacher_err: teacher_err
+                    });
+                  } else {
+                    var topic;
+                    for (var i = 0; i < teacher_data.topics.length; i++) {
+                      if (teacher_data.topics[i].name == req.body.topic) {
+                        topic = teacher_data.topics[i];
+                      }
+                    }
+
+                    var num_classes = topic.num_classes;
+                    var rating;
+                    var old_rating = topic.rating;
+                    var new_rating = (1 * req.body.teacher_rating); //to make a number
+
+                    if (num_classes != 0) {                                        
+                      rating = (((old_rating * num_classes) + new_rating) / (num_classes + 1));
+                    } else {
+                      rating = new_rating;
+                    }
+                    num_classes = num_classes + 1;
+
+                    Teacher.findOneAndUpdate({_id: req.body.teacher_id, 'topics.name': req.body.topic}, 
+                      {$set: {'topics.$.rating': rating, 'topics.$.num_classes': num_classes}}, {new: true},
+                        function(update_err, update_data) {
+                          if (update_err) {
+                            console.log('update_err: ' + update_err);
+                            return res.status(500).json({
+                              update_err: update_err
+                            });
+                          } else {
+                            console.log('update_data: ' + update_data);
+                            return res.json(update_data);
+                          }
+                        });
+                  }              
+                });
+              }
+      });
 });
 
 

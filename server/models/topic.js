@@ -8,10 +8,11 @@ var Topic = new Schema({
   _id: false,
   name: String,
   experience: Number,
-  rating: Number
+  rating: Number,
+  num_classes: Number
 });
 
 Topic.plugin(passportLocalMongoose);
-
+Topic.set('autoIndex', false);
 
 module.exports = mongoose.model('topic', Topic);

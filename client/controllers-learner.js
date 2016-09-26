@@ -134,6 +134,7 @@ angular.module('myApp').controller('learnerRequestController',
               if(data[0].teacher_id) {
                 console.log('found a teacher!!!');
                 $rootScope.teacher_id = data[0].teacher_id;
+                $rootScope.topic = data[0].topic;
                 getTeacher();
               } else {
                 console.log('still looking for a teacher..');
@@ -174,7 +175,8 @@ angular.module('myApp').controller('learnerRequestController',
           .then(function (data) {
             $scope.request.topic_info = data;
             $scope.request.teacher.info = $scope.request.teacher.name + ' -- ' + $scope.request.topic_info.experience + 
-              ' years of experience with ' + $scope.request.topic;
+              ' years of experience with ' + $scope.request.topic + ' -- num classes: ' + $scope.request.topic_info.num_classes +
+              ' -- rating: ' + $scope.request.topic_info.rating;
             $scope.disable_button = false;
           })
           // handle error
@@ -190,6 +192,7 @@ angular.module('myApp').controller('learnerRequestController',
        // handle success
         .then(function () {
           $rootScope.teacher_id = '';
+          $rootScope.topic = '';
           $scope.request.topic_info = '';
           $scope.request.header = 'Trying to find you another teacher...';
           $scope.request.teacher = '';
@@ -226,6 +229,7 @@ angular.module('myApp').controller('learnerRequestController',
         .then(function () {
           $rootScope.request_id = '';
           $rootScope.teacher_id = '';
+          $rootScope.topic = '';
           $scope.request = {};
 
           $scope.request.difficulty = 'Medium';
@@ -252,7 +256,7 @@ angular.module('myApp').controller('learnController',
   function ($rootScope, $scope, $location, $timeout, LearnService, RequestService) {
 
     var from_send = false;
-    var stop = false;    
+    var stop = false;  
 
     var getMessages = function() {
         LearnService.getMessages($rootScope.request_id)
@@ -326,6 +330,7 @@ angular.module('myApp').controller('learnController',
         .then(function () {
           $rootScope.request_id = '';
           $rootScope.teacher_id = '';
+          $rootScope.topic = '';
           stop = true;
           if (path == 1) {
             $location.path('/learner');
@@ -346,7 +351,8 @@ angular.module('myApp').controller('learnController',
     };
 
     $scope.finishRequest = function () {
-      RequestService.finishRequest($rootScope.request_id, $scope.request.teacher_rating, $scope.request.understanding)
+      RequestService.finishRequest($rootScope.request_id, $scope.request.teacher_rating, $scope.request.understanding,
+        $rootScope.teacher_id, $rootScope.topic)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
@@ -389,7 +395,7 @@ angular.module('myApp').controller('learnerProfileController',
             } else if (diff < 86400) {
               time = Math.round((diff / 3600)) + ' hours';
             } else if (diff < 604800) {
-              time = Math.round((diff / 86400)) + ' days'
+              time = Math.round((diff / 86400)) + ' days';
             } else if (diff < 31449600) {
               time = Math.round((diff / 604800)) + ' weeks';
             } else {
