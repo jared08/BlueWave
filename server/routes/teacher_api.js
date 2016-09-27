@@ -52,14 +52,11 @@ router.get('/logout', function(req, res) {
 });
 
 router.get('/status', function(req, res) {
-  console.log('getting status for: ' + req);
   if (!req.isAuthenticated()) {
-    console.log('req not authenticated');
     return res.status(200).json({
       status: false
     });
   }
-  console.log('authenticated');
   res.status(200).json({
     status: true
   });

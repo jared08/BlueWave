@@ -7,10 +7,13 @@ var Learner = require('../models/learner.js');
 
 router.get('/getMessages', function(req, res) {
   Request.find({_id: req.query.request_id}, function(err, data) {
-      //probably shouldn't return entire user, just topics
+      //probably shouldn't return entire request, just messages
       if (err) {
-        return res.json(err);
-      } else {
+          console.log('err: ' + err);
+          return res.status(500).json({
+            err: err
+          });
+        } else {
         return res.json(data);
       }
     });
@@ -71,7 +74,6 @@ router.post('/addMessageLearner', function(req, res) {
 		}
 	})
 });
-
 
 
 module.exports = router;

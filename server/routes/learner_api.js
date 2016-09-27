@@ -14,13 +14,10 @@ router.post('/register', function(req, res) {
         err: err
       });
     }
-    console.log('trying to authenticate');
     passport.authenticate('learner')(req, res, function () {
-      console.log('authenticating');
       return res.status(200).json({
         status: 'Registration successful!'
       });
-    console.log('couldnt authenticate: ' + res);
     });
   });
 });
