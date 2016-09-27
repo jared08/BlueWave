@@ -156,6 +156,8 @@ router.put('/finishRequest', function (req, res) {
 
                     if (num_classes != 0) {                                        
                       rating = (((old_rating * num_classes) + new_rating) / (num_classes + 1));
+                      rating = rating.toFixed(1); //rounds it to one decimal place, but returns a string
+                      rating = rating * 1;
                     } else {
                       rating = new_rating;
                     }

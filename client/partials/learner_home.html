@@ -70,6 +70,9 @@
         </div>
         <div class="modal-body">
           <p>{{request.teacher.info}}</p>
+          <p style="display:inline">{{request.teacher.info_rating}}</p>
+          <img style="display:inline" ng-src="{{image}}"/>
+          <p style="display:inline">{{request.teacher.info_num_classes}}</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelRequest()" >Cancel Request</button>

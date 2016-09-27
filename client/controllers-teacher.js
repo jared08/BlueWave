@@ -154,14 +154,7 @@ angular.module('myApp').controller('teacherRequestController',
               if (!stop) {
                 if(data[0].state == 'in_progress') {
                   console.log('they accepted!!');
-
                   $('.modal').modal('hide');
-
-                  // var loginModal = $modal({template:'/template.html', show:false});
-                  // loginModal.$promise.then(loginModal.hide);
-
-                  // this.$hide();
-
                   $location.path('/teach');
                 } else {
                   console.log('still waiting..');
@@ -206,6 +199,11 @@ angular.module('myApp').controller('teacherTopicController',
        // handle success
         .then(function (data) {
           $scope.topiclist = data[0].topics;
+
+          for (var i = 0; i < data[0].topics.length; i++) {
+            $scope.topiclist[i].rating = data[0].topics[i].rating.toFixed(1);
+          }          
+
           console.log('topiclist: ' + $scope.topiclist);
           $location.path('/teacher_profile');
           $scope.disabled = false;
@@ -416,8 +414,8 @@ angular.module('myApp').controller('teacherProfileController',
        // handle success
         .then(function (data) {
           $scope.requestlist = data;
-          // $scope.messagelist = data.messages;
-          for (var i = 0; i < data.length; i++) {
+
+          for (var i = 0; i < data.length; i++) {            
 
             var date1 = new Date(data[i].start_time);
             var date2 = new Date(data[i].end_time);
