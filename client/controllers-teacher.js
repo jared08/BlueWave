@@ -106,7 +106,32 @@ angular.module('myApp').controller('teacherRequestController',
        // handle success
         .then(function (data) {
           $scope.requestlist = data;
-          $location.path('/teacher');
+
+          for (var i = 0; i < data.length; i++) {           
+
+            var date1 = new Date(data[i].create_time);
+            var date2 = new Date();
+
+            var diff = ((date2 - date1) / 1000).toString();
+
+            var time;
+            if (diff < 60) {
+              time = Math.round((diff / 1)) + ' seconds';
+            } else if (diff < 3600) {
+              time = Math.round((diff / 60)) + ' minutes';
+            } else if (diff < 86400) {
+              time = Math.round((diff / 3600)) + ' hours';
+            } else if (diff < 604800) {
+              time = Math.round((diff / 86400)) + ' days';
+            } else if (diff < 31449600) {
+              time = Math.round((diff / 604800)) + ' weeks';
+            } else {
+              time = Math.round((diff / 31449600)) + ' years';
+            }
+            $scope.requestlist[i].time = time;
+          }
+
+
           $scope.disabled = false;
         })
         // handle error
@@ -201,7 +226,13 @@ angular.module('myApp').controller('teacherTopicController',
           $scope.topiclist = data[0].topics;
 
           for (var i = 0; i < data[0].topics.length; i++) {
-            $scope.topiclist[i].rating = data[0].topics[i].rating.toFixed(1);
+            if ($scope.topiclist[i].num_classes == 0) {
+              $scope.topiclist[i].rating = '--';
+              $scope.topiclist[i].num_classes = '--';
+            } else {
+              $scope.topiclist[i].rating = data[0].topics[i].rating.toFixed(1);
+            }
+            
           }          
 
           console.log('topiclist: ' + $scope.topiclist);

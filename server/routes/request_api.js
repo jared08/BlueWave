@@ -212,7 +212,7 @@ router.put('/finishRequest', function (req, res) {
 
 router.get('/getRequestListForTopic', function(req, res) {
   Teacher.findOne({_id: req.query.teacher_id}, function(teacher_err, teacher_data) {
-    if (teacher_err) {
+    if (teacher_err || !teacher_data) {
         return res.status(500).json({
         teacher_err: teacher_err
       });
