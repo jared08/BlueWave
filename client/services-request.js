@@ -140,14 +140,14 @@ angular.module('myApp').factory('RequestService',
 
     }
 
-    function finishRequest(request_id, teacher_rating, understanding, teacher_id, topic) {
+    function finishRequest(request_id, teacher_rating, understanding, teacher_id, topic, comments) {
       // create a new instance of deferred
       var deferred = $q.defer();
 
       // send a post request to the server
       return $http.put('/request/finishRequest',
         {request_id: request_id, teacher_rating: teacher_rating, understanding: understanding,
-          teacher_id: teacher_id, topic: topic})
+          teacher_id: teacher_id, topic: topic, comments: comments})
         .then(function(response) {
               console.log(response.data);
               return response.data;

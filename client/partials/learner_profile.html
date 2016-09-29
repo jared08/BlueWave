@@ -27,6 +27,7 @@
           <th>Teacher Rating</th>
           <th>Understanding</th>
           <th>View Messages</th>
+          <th>View Comments</th>
         </tr>
       </thead>
       <tbody>
@@ -38,6 +39,7 @@
           <td>{{request.teacher_rating}}</td>
           <td>{{request.understanding}}</td>
           <td><button class="btn btn-primary" data-toggle="modal" data-target="#messagesModal" ng-click="setMessages(request)">View Messages</button></td>
+          <td><button class="btn btn-primary" data-toggle="modal" data-target="#commentsModal" ng-click="setComments(request)">View Comments</button></td>
         </tr>
       </tbody>
     </table>
@@ -61,6 +63,26 @@
                     </p>
                   </div>                        
               </ul>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+         <!-- Modal -->
+      <div class="modal" id="commentsModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Your Comments</h4>
+            </div>
+            <div class="modal-body">
+              <p>
+                {{comments}}
+              </p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

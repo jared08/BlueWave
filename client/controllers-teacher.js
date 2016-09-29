@@ -495,4 +495,8 @@ angular.module('myApp').controller('teacherProfileController',
     $scope.messagelist = messages;
   }
 
+   $scope.setComments = function (request) {
+    $scope.comments = request.comments;
+  }
+
 }]);

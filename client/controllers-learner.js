@@ -182,23 +182,23 @@ angular.module('myApp').controller('learnerRequestController',
               $scope.request.teacher.info_num_classes = '';
             } else {
               $scope.request.teacher.info_rating = $scope.request.topic_info.rating.toFixed(1);
-              if ($scope.request.topic_info.rating == 5) {
+              if ($scope.request.topic_info.rating > 4.7) {
                 $scope.image = 'partials/images/5-star.png';
-              } else if ($scope.request.topic_info.rating == 4.5) {
+              } else if ($scope.request.topic_info.rating > 4.2) {
                 $scope.image = 'partials/images/4.5-star.png';
-              } else if ($scope.request.topic_info.rating == 4) {
+              } else if ($scope.request.topic_info.rating > 3.7) {
                 $scope.image = 'partials/images/4-star.png';
-              } else if ($scope.request.topic_info.rating == 3.5) {
+              } else if ($scope.request.topic_info.rating > 3.2) {
                 $scope.image = 'partials/images/3.5-star.png';
-              } else if ($scope.request.topic_info.rating == 3) {
+              } else if ($scope.request.topic_info.rating > 2.7) {
                 $scope.image = 'partials/images/3-star.png';
-              } else if ($scope.request.topic_info.rating == 2.5) {
+              } else if ($scope.request.topic_info.rating > 2.2) {
                 $scope.image = 'partials/images/2.5-star.png';
-              } else if ($scope.request.topic_info.rating == 2) {
+              } else if ($scope.request.topic_info.rating > 1.7) {
                 $scope.image = 'partials/images/2-star.png';
-              } else if ($scope.request.topic_info.rating == 1.5) {
+              } else if ($scope.request.topic_info.rating > 1.2) {
                 $scope.image = 'partials/images/1.5-star.png';
-              } else if ($scope.request.topic_info.rating == 1.5) {
+              } else if ($scope.request.topic_info.rating > 0.7) {
                 $scope.image = 'partials/images/1-star.png';
               } else {
                 $scope.image = '//:0';
@@ -382,8 +382,9 @@ angular.module('myApp').controller('learnController',
     };
 
     $scope.finishRequest = function () {
+
       RequestService.finishRequest($rootScope.request_id, $scope.request.teacher_rating, $scope.request.understanding,
-        $rootScope.teacher_id, $rootScope.topic)
+        $rootScope.teacher_id, $rootScope.topic, $scope.request.comments.text)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
@@ -449,7 +450,6 @@ angular.module('myApp').controller('learnerProfileController',
 
    $scope.setMessages = function (request) {
     var index = $scope.requestlist.indexOf(request);
-    console.log('index: ' + index);
 
     var messages = $scope.requestlist[index].messages;       
     for (i = 0; i < messages.length; i++) {
@@ -458,6 +458,10 @@ angular.module('myApp').controller('learnerProfileController',
       } 
     }
     $scope.messagelist = messages;
+  }
+
+  $scope.setComments = function (request) {
+    $scope.comments = request.comments;
   }
 
 }]);
