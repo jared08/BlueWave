@@ -14,6 +14,6 @@ var Learner = new Schema({
 });
 
 Learner.plugin(passportLocalMongoose);
-
+Learner.set('autoIndex', false);
 
 module.exports = mongoose.model('learners', Learner);

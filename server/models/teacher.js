@@ -14,6 +14,6 @@ var Teacher = new Schema({
 });
 
 Teacher.plugin(passportLocalMongoose);
-
+Teacher.set('autoIndex', false);
 
 module.exports = mongoose.model('teachers', Teacher);

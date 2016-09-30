@@ -13,6 +13,6 @@ var Topic = new Schema({
 });
 
 Topic.plugin(passportLocalMongoose);
-Topic.set('autoIndex', false);
+// Topic.set('autoIndex', false);
 
 module.exports = mongoose.model('topic', Topic);
