@@ -12,7 +12,8 @@ angular.module('myApp').controller('learnerLoginController',
       LearnerAuthService.loginToLearn($scope.loginForm.username, $scope.loginForm.password)
         // handle success
         .then(function (data) {          
-          $rootScope.learner_id = data._id;       
+          $rootScope.learner_id = data._id;     
+          $rootScope.learner_name = data.name;     
           $location.path('/learner');
           $scope.disabled = false;
           $scope.loginForm = {};
@@ -89,9 +90,20 @@ angular.module('myApp').controller('learnerRequestController',
 
     var stop;
 
-    
+    $scope.submit = function () {
+      if ($scope.request.contact_method == 'Chat') {
+        $('#chatModal').modal('show');
+        createRequest();
+      } else {
+        $('#emailModal').modal('show');
+      }
+    }
 
-    $scope.createRequest = function () {
+    $scope.sendEmail = function () {
+      //TBD -- not sure if it should be an email or like an offline chat
+    }
+
+    var createRequest = function () {
 
       // initial values
       $scope.error = false;
@@ -383,8 +395,14 @@ angular.module('myApp').controller('learnController',
 
     $scope.finishRequest = function () {
 
+      var comments = '';
+
+      if ($scope.comments) {
+        comments = $scope.comments.text;
+      }
+
       RequestService.finishRequest($rootScope.request_id, $scope.request.teacher_rating, $scope.request.understanding,
-        $rootScope.teacher_id, $rootScope.topic, $scope.request.comments.text)
+        $rootScope.teacher_id, $rootScope.topic, comments)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
