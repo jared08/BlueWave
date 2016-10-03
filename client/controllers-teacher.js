@@ -155,6 +155,8 @@ angular.module('myApp').controller('teacherRequestController',
         .then(function () {
           stop = false;
           $rootScope.request_id = request_id;
+          $scope.title = 'Waiting for your learner to accept..';
+          $scope.body = 'Please wait..';
           refreshSingleRequest();
           // $location.path('/teach');
           $scope.disabled = false;
@@ -174,10 +176,14 @@ angular.module('myApp').controller('teacherRequestController',
         RequestService.getRequestInfo($rootScope.request_id)
          // handle success
           .then(function (data) {
-            console.log('DATA FROM SINGLE REQUEST: ' + data[0].state);
-            console.log('STOP: ' + stop);
               if (!stop) {
-                if(data[0].state == 'in_progress') {
+                if (!data[0] || !data[0].teacher_id) {
+                  console.log('learner left..');
+                  $scope.title = 'Your learner left...';
+                  $scope.body = '';
+                  refreshRequests();
+                }
+                else if(data[0].state == 'in_progress') {
                   console.log('they accepted!!');
                   $('.modal').modal('hide');
                   $location.path('/teach');
@@ -196,8 +202,8 @@ angular.module('myApp').controller('teacherRequestController',
         }, 3000)
       };    
 
-      $scope.cancelRequest = function () {
-      RequestService.cancelRequest($rootScope.request_id)
+      $scope.leaveRequest = function () {
+      RequestService.leaveRequest($rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';

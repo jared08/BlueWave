@@ -62,6 +62,36 @@ angular.module('myApp').factory('RequestService',
             });
     }
 
+    function deleteRequest(request_id) {
+      // create a new instance of deferred
+      var deferred = $q.defer();
+
+      var parameters = {
+         request_id: request_id
+      };
+
+      // send a post request to the server
+      $http.delete('/request/deleteRequest',
+        { params: parameters })
+        // handle success
+        .success(function (data, status) {
+          if(status === 200 && data.status){
+            deferred.resolve();
+          } else {
+            deferred.reject();
+          }
+        })
+        // handle error
+        .error(function (data) {
+          deferred.reject();
+        });
+
+      // return promise object
+      
+      return deferred.promise;
+
+    }
+
     function acceptRequest(teacher_id, request_id) {
       // create a new instance of deferred
       var deferred = $q.defer();
@@ -89,6 +119,25 @@ angular.module('myApp').factory('RequestService',
       // send a post request to the server
       return $http.put('/request/acceptTeacher',
         {request_id: request_id, learner_id: learner_id, question: question})
+        .then(function(response) {
+              console.log(response.data);
+              return response.data;
+            });
+
+      // return promise object
+      
+      return deferred.promise;
+
+    }
+
+
+    function leaveRequest(request_id) {
+      // create a new instance of deferred
+      var deferred = $q.defer();
+
+      // send a post request to the server
+      return $http.put('/request/leaveRequest',
+        {request_id: request_id})
         .then(function(response) {
               console.log(response.data);
               return response.data;
@@ -195,7 +244,9 @@ angular.module('myApp').factory('RequestService',
       getRequestInfo: getRequestInfo,
       getTeacherInfo: getTeacherInfo,
       getTeacherTopicInfo: getTeacherTopicInfo,
+      deleteRequest: deleteRequest,
       acceptRequest: acceptRequest,
+      leaveRequest: leaveRequest,
       acceptTeacher: acceptTeacher,
       rejectTeacher: rejectTeacher,
       cancelRequest: cancelRequest,

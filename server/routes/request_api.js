@@ -85,8 +85,36 @@ router.get('/getTeacherTopicInfo', function(req, res) {
   });
 });
 
+router.delete('/deleteRequest', function (req, res) {
+  Request.remove({_id: req.query.request_id}, function(request_err, request_data) {
+    if (request_err) {
+        console.log('request_err: ' + request_err);
+        return res.status(500).json({
+        request_err: request_err
+      });
+    } else {
+        return res.status(200).json({
+            status: 'Deleted Request!'  
+          });
+      } 
+  });
+});
+
 router.put('/acceptRequest', function (req, res) {      
   Request.findByIdAndUpdate(req.body.request_id, {teacher_id: req.body.teacher_id}, function (err, doc) {
+    if (err) {
+      console.log('err: ' + err);
+      return res.status(500).json({
+        err: err
+      });
+    } else {
+      return res.json(doc);
+    }
+  });
+});
+
+router.put('/leaveRequest', function (req, res) {      
+  Request.findByIdAndUpdate(req.body.request_id, {teacher_id: null}, function (err, doc) {
     if (err) {
       console.log('err: ' + err);
       return res.status(500).json({

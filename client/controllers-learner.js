@@ -88,7 +88,7 @@ angular.module('myApp').controller('learnerRequestController',
     $scope.request.isChecked2 = true;
     $scope.disable_button = true;
 
-    var stop;
+    var stop_looking, stop_teacher;
 
     $scope.submit = function () {
       if ($scope.request.contact_method == 'Chat') {
@@ -113,7 +113,7 @@ angular.module('myApp').controller('learnerRequestController',
       $scope.disable_button = true;
 
       //needs this to stop loop of looking for a teacher if someone hits cancel
-      stop = false;
+      stop_looking = false;
 
       // call register from service
       RequestService.createRequest($rootScope.learner_id, $scope.request.question, $scope.request.topic, $scope.request.difficulty,
@@ -143,7 +143,7 @@ angular.module('myApp').controller('learnerRequestController',
         RequestService.getRequestInfo($rootScope.request_id)
          // handle success
           .then(function (data) {
-            if (!stop) {
+            if (!stop_looking) {
               if(data[0].teacher_id) {
                 console.log('found a teacher!!!');
                 $rootScope.teacher_id = data[0].teacher_id;
@@ -217,6 +217,8 @@ angular.module('myApp').controller('learnerRequestController',
               }
               
               $scope.request.teacher.info_num_classes = ' (' + $scope.request.topic_info.num_classes + ')';
+              checkTeacherStillThere();
+              stop_teacher = false;
             }
             
             $scope.disable_button = false;
@@ -229,6 +231,38 @@ angular.module('myApp').controller('learnerRequestController',
           });
       };     
 
+      var checkTeacherStillThere = function() {
+      $timeout(function() {
+        RequestService.getRequestInfo($rootScope.request_id)
+         // handle success
+          .then(function (data) {
+            if (!stop_teacher) {
+              if(data[0].teacher_id) {
+                console.log('Teacher still here!');
+                checkTeacherStillThere();
+              } else {
+                console.log('teacher left...');
+
+                $rootScope.teacher_id = '';
+                $rootScope.topic = '';
+                $scope.request.topic_info = '';
+                $scope.image = '//:0';
+                $scope.request.header = 'Your teacher left..trying to find you another teacher...';
+                $scope.request.teacher = '';
+                stop_teacher = true;
+                refreshRequest();
+              }
+            }
+          })
+          // handle error
+          .catch(function () {
+            $scope.error = true;
+            $scope.errorMessage = "Something went wrong!";
+            $scope.disabled = false;
+          });
+        }, 3000)
+      };  
+
     $scope.rejectTeacher = function () {
       RequestService.rejectTeacher($rootScope.request_id)
        // handle success
@@ -240,6 +274,7 @@ angular.module('myApp').controller('learnerRequestController',
           $scope.request.header = 'Trying to find you another teacher...';
           $scope.request.teacher = '';
           $scope.disable_button = true;
+          stop_teacher = true;
           refreshRequest();
         })
         // handle error
@@ -254,7 +289,8 @@ angular.module('myApp').controller('learnerRequestController',
       RequestService.acceptTeacher($rootScope.request_id, $rootScope.learner_id, $scope.request.question)
        // handle success
         .then(function () {
-          stop = true;      
+          stop = true;     
+          stop_teacher = true; 
           $location.path('/learn');
         })
         // handle error
@@ -266,8 +302,8 @@ angular.module('myApp').controller('learnerRequestController',
       
     }
 
-    $scope.cancelRequest = function () {
-      RequestService.cancelRequest($rootScope.request_id)
+    $scope.deleteRequest = function () {
+      RequestService.deleteRequest($rootScope.request_id)
        // handle success
         .then(function () {
           $rootScope.request_id = '';
@@ -280,7 +316,8 @@ angular.module('myApp').controller('learnerRequestController',
           $scope.request.isChecked1 = true;
           $scope.request.isChecked2 = true;
 
-          stop = true;
+          stop_looking = true;
+          stop_teacher = true;
           
           $location.path('/learner');
         })
