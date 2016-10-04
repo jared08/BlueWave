@@ -82,13 +82,107 @@ angular.module('myApp').controller('learnerRequestController',
   function ($rootScope, $scope, $timeout, $location, RequestService) {
 
     $scope.request = {};
+
+    $scope.image_1 = 'partials/images/math.png'
+    $scope.image_2 = 'partials/images/finance.png'
+    $scope.image_3 = 'partials/images/technology.png'
+    $scope.image_4 = 'partials/images/health.png'
+    $scope.image_5 = 'partials/images/science.png'
+    $scope.image_6 = 'partials/images/sports.png'
+    $scope.image_7 = 'partials/images/cars.png'
+    $scope.image_8 = 'partials/images/travel.png'
+    $scope.image_9 = 'partials/images/business.png'
+    $scope.image_10 = 'partials/images/fitness.png';
+    $scope.image_11 = 'partials/images/music.png';
+    $scope.image_12 = 'partials/images/other.png';    
+
     $scope.request.difficulty = 'Medium';
     $scope.request.contact_method = 'Chat';
     $scope.request.isChecked1 = true;
     $scope.request.isChecked2 = true;
     $scope.disable_button = true;
 
+    var initializeOpacities = function() {
+      $scope.opacity_1 = 1;
+      $scope.opacity_2= 1;
+      $scope.opacity_3 = 1;
+      $scope.opacity_4 = 1;
+      $scope.opacity_5 = 1;
+      $scope.opacity_6 = 1;
+      $scope.opacity_7 = 1;
+      $scope.opacity_8 = 1;
+      $scope.opacity_9 = 1;
+      $scope.opacity_10 = 1;
+      $scope.opacity_11 = 1;
+      $scope.opacity_12 = 1;
+    }
+
+    initializeOpacities();
+    
+
+    console.log($scope.opacity_1 + ' at initialization');
+
     var stop_looking, stop_teacher;
+
+    $scope.highlight = function (index) {
+      if (index == 1) {
+        $scope.request.topic = 'Math';  
+        initializeOpacities();     
+        $scope.opacity_1 = 0.3;
+      } else if (index == 2) {
+        $scope.request.topic = 'Finance';
+        initializeOpacities();
+        $scope.opacity_2 = 0.3;
+      } else if (index == 3) {
+        $scope.request.topic = 'Technology';
+        initializeOpacities();
+        $scope.opacity_3 = 0.3;
+      } else if (index == 4) {
+        $scope.request.topic = 'Health';
+        initializeOpacities();
+        $scope.opacity_4 = 0.3;
+      } else if (index == 5) {
+        $scope.request.topic = 'Science';
+        initializeOpacities();
+        $scope.opacity_5 = 0.3;
+      } else if (index == 6) {
+        $scope.request.topic = 'Sports';
+        initializeOpacities();
+        $scope.opacity_6 = 0.3;
+      } else if (index == 7) {
+        $scope.request.topic = 'Cars';
+        initializeOpacities();
+        $scope.opacity_7 = 0.3;
+      } else if (index == 8) {
+        $scope.request.topic = 'Travel';
+        initializeOpacities();
+        $scope.opacity_8 = 0.3;
+      } else if (index == 9) {
+        $scope.request.topic = 'Business';
+        initializeOpacities();
+        $scope.opacity_9 = 0.3;
+      } else if (index == 10) {
+        $scope.request.topic = 'Fitness';
+        initializeOpacities();
+        $scope.opacity_10 = 0.3;
+      } else if (index == 11) {
+        $scope.request.topic = 'Music';
+        initializeOpacities();
+        $scope.opacity_11 = 0.3;
+      } else if (index == 12) {
+        $scope.request.topic = 'Other';
+        initializeOpacities();
+        $scope.opacity_12 = 0.3;
+      }
+    }
+
+    $scope.submitOther = function() {
+      if ($scope.other) {
+        console.log($scope.other);
+        //do something with other
+        $scope.other = '';
+      }     
+    }
 
     $scope.submit = function () {
       if ($scope.request.contact_method == 'Chat') {
