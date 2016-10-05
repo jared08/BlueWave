@@ -7,7 +7,8 @@ var Topic = require('../models/topic.js');
 
 router.post('/addTopic', function(req, res) {
   Teacher.update({_id: req.body.teacher_id },
-      {$push: { 'topics' : (new Topic({ name: req.body.topic, experience: req.body.experience, num_classes: 0, rating: 0})) }}, 
+      {$push: { 'topics' : (new Topic({ name: req.body.topic, experience: req.body.experience, description: req.body.description,
+        num_classes: 0, rating: 0})) }}, 
         function(err, data) { 
         if (err) {
           console.log('err: ' + err);

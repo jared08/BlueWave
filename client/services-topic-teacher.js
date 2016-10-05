@@ -2,13 +2,13 @@ angular.module('myApp').factory('TeacherTopicService',
   ['$q', '$timeout', '$http',
   function ($q, $timeout, $http) {   
 
-    function addTopic(teacher_id, topic_name, topic_experience) {
+    function addTopic(teacher_id, topic_name, topic_experience, topic_description) {
       // create a new instance of deferred
       var deferred = $q.defer();
 
       // send a post request to the server
       $http.post('/teacher/topic/addTopic',
-        {teacher_id: teacher_id, topic: topic_name, experience: topic_experience})
+        {teacher_id: teacher_id, topic: topic_name, experience: topic_experience, description: topic_description})
         // handle success
         .success(function (data, status) {
           if(status === 200 && data.status){

@@ -7,7 +7,8 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var Topic = new Schema({
   _id: false,
   name: String,
-  experience: Number,
+  experience: String,
+  description: String,
   rating: Number,
   num_classes: Number
 });

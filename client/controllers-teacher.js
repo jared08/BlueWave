@@ -223,6 +223,8 @@ angular.module('myApp').controller('teacherTopicController',
   ['$rootScope', '$scope', '$location', 'TeacherTopicService',
   function ($rootScope, $scope, $location, TeacherTopicService) {
 
+    $scope.disable_add = true;
+    
     var refreshTopics = function() {
       console.log('refreshing requests!!');
 
@@ -237,13 +239,10 @@ angular.module('myApp').controller('teacherTopicController',
               $scope.topiclist[i].num_classes = '--';
             } else {
               $scope.topiclist[i].rating = data[0].topics[i].rating.toFixed(1);
-            }
-            
+            }            
           }          
 
           console.log('topiclist: ' + $scope.topiclist);
-          $location.path('/teacher_profile');
-          $scope.disabled = false;
         })
         // handle error
         .catch(function () {
@@ -255,6 +254,89 @@ angular.module('myApp').controller('teacherTopicController',
 
     refreshTopics();
 
+    $scope.Topics = [{
+        Id: 1,
+        Name: 'Math'
+      }, {
+        Id: 2,
+        Name: 'Finance'
+      }, {
+        Id: 3,
+        Name: 'Technology'
+      }, {
+        Id: 4,
+        Name: 'Health'
+      }, {
+        Id: 5,
+        Name: 'Science'
+      }, {
+        Id: 6,
+        Name: 'Sports'
+      }, {
+        Id: 7,
+        Name: 'Cars'
+      }, {
+        Id: 8,
+        Name: 'Travel'
+      }, {
+        Id: 9,
+        Name: 'Business'
+      }, {
+        Id: 10,
+        Name: 'Fitness'
+      }, {
+        Id: 11,
+        Name: 'Music'
+      }];
+
+    $scope.Experiences = [{
+        Id: 1,
+        Name: '0-1 years'
+      }, {
+        Id: 2,
+        Name: '1-2 years'
+      }, {
+        Id: 3,
+        Name: '2-3 years'
+      }, {
+        Id: 4,
+        Name: '3-5 years'
+      }, {
+        Id: 5,
+        Name: '5-10 years'
+      }, {
+        Id: 6,
+        Name: '10-20 years'
+      }, {
+        Id: 7,
+        Name: '20-30 years'
+      }, {
+        Id: 8,
+        Name: '30+ years'
+      }];
+
+    $scope.getTopic = function (topic) {
+      var topicId = $scope.topic;
+      var topic_name = $.grep($scope.Topics, function (topic) {
+        return topic.Id == topicId;
+      })[0].Name;
+    }
+
+    $scope.getExperience = function (experience) {
+      var experienceId = $scope.experience;
+      var experience_name = $.grep($scope.Experiences, function (experience) {
+        return experience.Id == experienceId;
+      })[0].Name;
+    }
+
+    $scope.changeDisabled = function() {
+      if ($scope.Topics[$scope.topic - 1] && $scope.Experiences[$scope.experience - 1]) {
+        $scope.disable_add = false;
+      } else {
+        $scope.disable_add = true;
+      }
+    }
+
     $scope.addTopic = function () {
 
       // $scope.teacher = TeacherStateService;
@@ -263,15 +345,25 @@ angular.module('myApp').controller('teacherTopicController',
       $scope.error = false;
       $scope.disabled = true;
 
+      var description;
+      if ($scope.description) {
+        description = $scope.description.text;
+      } else {
+        description = '';
+      }
+
       // call register from service      
-      TeacherTopicService.addTopic($rootScope.teacher_id, $scope.topic.name, $scope.topic.experience)
+      TeacherTopicService.addTopic($rootScope.teacher_id, $scope.Topics[$scope.topic - 1].Name, 
+        $scope.Experiences[$scope.experience - 1].Name, description)
         // handle success
         .then(function () {
           $location.path('/teacher_profile');
           $scope.disabled = false;
-          refreshTopics();
-          $scope.topic = '';
-          $scope.experience = '';
+          if ($scope.description) {
+            $scope.description.text = '';
+          }          
+          $scope.disable_add = true;
+          refreshTopics();          
         })
         // handle error
         .catch(function () {

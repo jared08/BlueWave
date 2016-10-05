@@ -118,9 +118,6 @@ angular.module('myApp').controller('learnerRequestController',
     }
 
     initializeOpacities();
-    
-
-    console.log($scope.opacity_1 + ' at initialization');
 
     var stop_looking, stop_teacher;
 
@@ -282,7 +279,7 @@ angular.module('myApp').controller('learnerRequestController',
           .then(function (data) {
             $scope.request.topic_info = data;
             $scope.request.teacher.info = $scope.request.teacher.name + ' -- ' + $scope.request.topic_info.experience + 
-              ' years of experience with ' + $scope.request.topic;
+              ' of experience with ' + $scope.request.topic + ' -- ' + $scope.request.topic_info.description;
             if ($scope.request.topic_info.num_classes == 0) {
               $scope.request.teacher.info_rating = 'No ratings..';
               $scope.request.teacher.info_num_classes = '';
